@@ -29,6 +29,12 @@ apply_patch "update-title-labels.js"  all
 
 # apply_patch "seeded-classic-run.js"   all #Disable seeded classic
 
+# nlz custom tweaks
+apply_patch "pokeball-catch-rates.js"  all
+apply_patch "shiny-base-rate.js"       all
+apply_patch "money-multiplier.js"      all
+apply_patch "shiny-egg-rates.js"       all
+
 # ── Mobile (iOS + Android) ────────────────────────────────────────────────────
 if [[ "$PLATFORM" == "mobile" || "$PLATFORM" == "android" ]]; then
 
