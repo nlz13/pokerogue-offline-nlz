@@ -1,6 +1,6 @@
 {
-  "appId": "xyz.scooom.pkr",
-  "appName": "PokéRogue Offline",
+  "appId": "xyz.scooom.pkr.nlz",
+  "appName": "PokéRogue Offline NLZ",
   "webDir": "dist",
   "ios": {
     "contentInset": "never",
