@@ -32,6 +32,7 @@ apply_patch "update-title-labels.js"  all
 # nlz custom tweaks
 apply_patch "pokeball-catch-rates.js"  all
 apply_patch "shiny-base-rate.js"       all
+apply_patch "shiny-variant-rates.js"   all
 apply_patch "money-multiplier.js"      all
 apply_patch "shiny-egg-rates.js"       all
 
