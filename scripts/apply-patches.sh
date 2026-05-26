@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-# apply-patches.sh — pre-build patches
+# apply-patches.sh -- pre-build patches
 #
 # Usage:
 #   ./apply-patches.sh            # all platforms (default)
@@ -11,7 +11,7 @@ PLATFORM="${1:-all}"
 
 source "$(dirname "$0")/patch-lib.sh"
 
-# ── All platforms ─────────────────────────────────────────────────────────────
+# -- All platforms -------------------------------------------------------------
 
 # Pending upstream PRs (remove once merged upstream)
 #apply_patch "7230.patch"         all   # PKR 7230
@@ -37,12 +37,13 @@ apply_patch "fix-epic-variant-filter.js" all
 apply_patch "money-multiplier.js"      all
 apply_patch "shiny-egg-rates.js"       all
 
-# ── Mobile (iOS + Android) ────────────────────────────────────────────────────
+# -- Mobile (iOS + Android) ---------------------------------------------------
 if [[ "$PLATFORM" == "mobile" || "$PLATFORM" == "android" ]]; then
 
-  # Pending upstream PRs
-  apply_patch "iosImport.patch"  mobile  # PKR 7222
-  apply_patch "noZoom.patch"     mobile  # PKR 7223
+  # Pending upstream PRs (converted to .js scripts -- git .patch files broke when upstream
+  # changed surrounding context lines; .js scripts use string matching and are more resilient)
+  apply_patch "iosImport.js"  mobile  # PKR 7222
+  apply_patch "noZoom.js"     mobile  # PKR 7223
 
   # Targeted Patches
   apply_patch "android-import-fix.js"        mobile
@@ -51,7 +52,7 @@ if [[ "$PLATFORM" == "mobile" || "$PLATFORM" == "android" ]]; then
 #  apply_patch "fix-capacitor-input-focus.js" mobile
 fi
 
-# ── Android only ──────────────────────────────────────────────────────────────
+# -- Android only -------------------------------------------------------------
 if [[ "$PLATFORM" == "android" ]]; then
 
   apply_patch "fix-android-image-paths.js"  android
