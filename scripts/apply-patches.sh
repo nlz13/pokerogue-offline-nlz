@@ -33,6 +33,7 @@ apply_patch "update-title-labels.js"  all
 apply_patch "pokeball-catch-rates.js"  all
 apply_patch "shiny-base-rate.js"       all
 apply_patch "shiny-variant-rates.js"   all
+apply_patch "fix-epic-variant-filter.js" all
 apply_patch "money-multiplier.js"      all
 apply_patch "shiny-egg-rates.js"       all
 
