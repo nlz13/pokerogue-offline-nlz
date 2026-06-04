@@ -40,7 +40,6 @@ jobs:
         run: bash ${{ github.workspace }}/scripts/apply-patches.sh mobile
 
       - name: Apply v2 patches (Dark Void + Mat Block)
-        working-directory: pokerogue-src
         run: |
           node ${{ github.workspace }}/patches/all/node/dark-void-boost.js
           node ${{ github.workspace }}/patches/all/node/mat-block-boost.js
