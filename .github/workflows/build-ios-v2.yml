@@ -39,9 +39,11 @@ jobs:
       - name: Apply base patches
         run: bash ${{ github.workspace }}/scripts/apply-patches.sh mobile
 
-      - name: Apply v2 patches (Dark Void boost)
+      - name: Apply v2 patches (Dark Void + Mat Block)
         working-directory: pokerogue-src
-        run: node ${{ github.workspace }}/patches/all/node/dark-void-boost.js
+        run: |
+          node ${{ github.workspace }}/patches/all/node/dark-void-boost.js
+          node ${{ github.workspace }}/patches/all/node/mat-block-boost.js
 
       - name: Inject build number into banner
         run: |
@@ -66,10 +68,10 @@ jobs:
         run: |
           pnpm add @capacitor/core @capacitor/cli @capacitor/ios @capacitor/filesystem @capacitor/share @capacitor/status-bar
 
-      - name: Configure Capacitor
+      - name: Configure Capacitor (v2 — separate bundle ID)
         working-directory: pokerogue-src
         run: |
-          cp ${{ github.workspace }}/configs/ios/capacitor/capacitor.config.json capacitor.config.json
+          cp ${{ github.workspace }}/configs/ios/capacitor/capacitor-v2.config.json capacitor.config.json
           cat capacitor.config.json
 
       - name: Add iOS platform
@@ -107,13 +109,13 @@ jobs:
           /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0 dict" ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeName string PokéRogue Save Data" ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:LSItemContentTypes array" ios/App/App/Info.plist
-          /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:LSItemContentTypes:0 string xyz.scooom.pkr.nlz.prsv" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:LSItemContentTypes:0 string xyz.scooom.pkr.nlz2.prsv" ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:LSHandlerRank string Owner" ios/App/App/Info.plist
 
           /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations array" ios/App/App/Info.plist || true
           /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0 dict" ios/App/App/Info.plist
-          /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0:UTTypeIdentifier string xyz.scooom.pkr.nlz.prsv" ios/App/App/Info.plist
-          /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0:UTTypeDescription string PokéRogue Save Data" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0:UTTypeIdentifier string xyz.scooom.pkr.nlz2.prsv" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0:UTTypeDescription string PokéRogue Save Data (v2)" ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0:UTTypeConformsTo array" ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0:UTTypeConformsTo:0 string public.data" ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Add :UTExportedTypeDeclarations:0:UTTypeTagSpecification dict" ios/App/App/Info.plist
