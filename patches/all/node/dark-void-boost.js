@@ -4,8 +4,9 @@
  *
  * Boosts Dark Void for offline fun:
  *   1. Sets priority to 7 (acts before almost everything)
- *   2. Injects a ReduceToOneHpAttr class and adds it to Dark Void so that
- *      all affected Pokemon are reduced to 1 HP in addition to being put to sleep.
+ *   2. Injects a ReduceToOneHpAttr class BEFORE initMoves() (not inside the
+ *      .push() call — class declarations inside function args are invalid TS)
+ *      and chains .attr(ReduceToOneHpAttr) on Dark Void so targets drop to 1 HP.
  *
  * Targets: pokerogue-src/src/data/moves/move.ts
  */
@@ -27,20 +28,23 @@ if (src.includes("dark-void-boost")) {
   process.exit(0);
 }
 
-// ── Patch 1: inject ReduceToOneHpAttr class ───────────────────────────────────
-// Inject right before the Dark Void move definition so it's in scope.
+// ── Patch 1: inject ReduceToOneHpAttr class BEFORE initMoves() ───────────────
+// The move definitions live inside initMoves() -> (allMoves as Move[]).push(...)
+// Class declarations cannot appear inside an expression, so we inject before
+// the function itself where it's valid module-level TypeScript.
 
-const CLASS_ANCHOR = `    new StatusMove(MoveId.DARK_VOID, PokemonType.DARK,`;
+const FUNC_ANCHOR = `export function initMoves() {`;
 
-if (!src.includes(CLASS_ANCHOR)) {
-  console.error("ERROR: Could not find Dark Void definition anchor in move.ts.");
+if (!src.includes(FUNC_ANCHOR)) {
+  console.error("ERROR: Could not find initMoves() declaration in move.ts.");
   process.exit(1);
 }
 
-const NEW_CLASS = `// dark-void-boost: reduces all affected targets to 1 HP
+const NEW_CLASS =
+`// dark-void-boost: reduces all affected targets to 1 HP
 class ReduceToOneHpAttr extends MoveEffectAttr {
   constructor() {
-    super(false); // target-affecting
+    super(false);
   }
   override apply(_user: Pokemon, target: Pokemon, _move: Move, _args: any[]): boolean {
     if (target.hp > 1) {
@@ -50,11 +54,11 @@ class ReduceToOneHpAttr extends MoveEffectAttr {
   }
 }
 
-    `;
+`;
 
-src = src.replace(CLASS_ANCHOR, NEW_CLASS + CLASS_ANCHOR);
+src = src.replace(FUNC_ANCHOR, NEW_CLASS + FUNC_ANCHOR);
 
-// ── Patch 2: set priority to 7 and add ReduceToOneHpAttr ─────────────────────
+// ── Patch 2: set priority to 7 and add ReduceToOneHpAttr to Dark Void ────────
 
 const DARK_VOID_OLD = `    new StatusMove(MoveId.DARK_VOID, PokemonType.DARK, 80, 10, -1, 0, 4) // Accuracy from Generations 4-6
       .attr(StatusEffectAttr, StatusEffect.SLEEP)
